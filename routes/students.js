@@ -28,7 +28,10 @@ router.get('', async (req, res, next) => {
 })
 router.get('/:id', async (req, res, next) => {
     try {
-        const student = await db('students').where({id: req.params.id});
+        const student = await db('students')
+                                            .where({'students.id': req.params.id})
+                                            .join('cohorts', {'cohorts.id':'students.cohort_id'})
+                                            .select('students.id','students.name', 'cohorts.name as cohort');
         res.status(200).json(student)
     } catch (err) {
         console.log(err);
